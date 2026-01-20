@@ -62,7 +62,7 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
 
   const patientData = {
     name: 'Sarah Johnson',
-    profileImage: 'https://images.unsplash.com/photo-1546961329-78bef0414d7c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx5b3VuZyUyMHdvbWFuJTIwcG9ydHJhaXR8ZW58MXx8fHwxNzY4Mjc1MzE0fDA&ixlib=rb-4.1.0&q=80&w=1080',
+    profileImage: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdmF0YXIlMjBzaWxob3VldHRlfGVufDF8fHx8MTc2ODMwODM4MHww&ixlib=rb-4.1.0&q=80&w=1080',
   };
 
   const aiPrediction = {
@@ -80,7 +80,7 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
       beds: { free: 12, occupied: 45, cleaning: 3 },
       waitingTime: '15 min',
       rating: 4.8,
-      image: 'https://images.unsplash.com/photo-1761881917053-a48d16611196?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxob3NwaXRhbCUyMGJ1aWxkaW5nJTIwbWVkaWNhbHxlbnwxfHx8fDE3NjgyMTgxMzJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
+      image: 'https://images.unsplash.com/photo-1551190822-a9333d879b1f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxob3NwaXRhbCUyMGJ1aWxkaW5nfGVufDF8fHx8MTc2ODMxMzM4MHww&ixlib=rb-4.1.0&q=80&w=1080',
     },
     {
       id: 2,
@@ -90,7 +90,7 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
       beds: { free: 8, occupied: 38, cleaning: 4 },
       waitingTime: '25 min',
       rating: 4.9,
-      image: 'https://images.unsplash.com/photo-1720180246446-d1738fe8ca76?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBob3NwaXRhbCUyMGludGVyaW9yfGVufDF8fHx8MTc2ODI0NjQ3Mnww&ixlib=rb-4.1.0&q=80&w=1080',
+      image: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwY2VudGVyJTIwYnVpbGRpbmd8ZW58MXx8fHwxNzY4MzEzMzgwfDA&ixlib=rb-4.1.0&q=80&w=1080',
     },
     {
       id: 3,
@@ -100,7 +100,7 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
       beds: { free: 5, occupied: 52, cleaning: 2 },
       waitingTime: '10 min',
       rating: 4.7,
-      image: 'https://images.unsplash.com/photo-1761881917053-a48d16611196?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxob3NwaXRhbCUyMGJ1aWxkaW5nJTIwbWVkaWNhbHxlbnwxfHx8fDE3NjgyMTgxMzJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
+      image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBob3NwaXRhbCUyMGZhY2FkfGVufDF8fHx8MTc2ODMxMzM4MHww&ixlib=rb-4.1.0&q=80&w=1080',
     },
   ];
 
@@ -184,18 +184,14 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
                 </button>
                 <h1 className="text-blue-600">Viksit Health</h1>
               </div>
-              <div className="flex items-center gap-3">
-                <Avatar className="w-10 h-10">
-                  <AvatarImage src={patientData.profileImage} alt={patientData.name} />
-                  <AvatarFallback>SJ</AvatarFallback>
-                </Avatar>
-                <button className="relative">
-                  <Bell className="w-6 h-6 text-gray-600" />
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                    2
-                  </span>
-                </button>
-              </div>
+            <div className="flex items-center gap-3">
+              <button className="relative">
+                <Bell className="w-6 h-6 text-gray-600" />
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                  2
+                </span>
+              </button>
+            </div>
             </div>
           </div>
         </div>
@@ -223,10 +219,9 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
               <div>
                 <p className="text-sm text-gray-600 mb-1">Doctor</p>
                 <div className="flex items-start gap-3">
-                  <Avatar className="w-12 h-12">
-                    <AvatarImage src={selectedDoctor.image} alt={selectedDoctor.name} />
-                    <AvatarFallback>{selectedDoctor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                  </Avatar>
+                  <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                    <User className="w-6 h-6 text-gray-400" />
+                  </div>
                   <div>
                     <p className="text-gray-800">{selectedDoctor.name}</p>
                     <p className="text-sm text-gray-600">{selectedDoctor.specialty}</p>
@@ -295,10 +290,6 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
                 <h1 className="text-blue-600">Viksit Health</h1>
               </div>
               <div className="flex items-center gap-3">
-                <Avatar className="w-10 h-10">
-                  <AvatarImage src={patientData.profileImage} alt={patientData.name} />
-                  <AvatarFallback>SJ</AvatarFallback>
-                </Avatar>
                 <button className="relative">
                   <Bell className="w-6 h-6 text-gray-600" />
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
@@ -322,8 +313,8 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
               <Card key={doctor.id} className="p-5 hover:shadow-lg transition-shadow bg-white">
                 <div className="flex items-start gap-3 mb-4">
                   <Avatar className="w-16 h-16">
-                    <AvatarImage src={doctor.image} alt={doctor.name} />
-                    <AvatarFallback>{doctor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    <AvatarImage src={selectedHospital.image} alt={selectedHospital.name} />
+                    <AvatarFallback>{selectedHospital.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
                     <h3 className="text-gray-800 mb-1">{doctor.name}</h3>
@@ -377,10 +368,6 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
               <h1 className="text-blue-600">Viksit Health</h1>
             </div>
             <div className="flex items-center gap-3">
-              <Avatar className="w-10 h-10">
-                <AvatarImage src={patientData.profileImage} alt={patientData.name} />
-                <AvatarFallback>SJ</AvatarFallback>
-              </Avatar>
               <button className="relative">
                 <Bell className="w-6 h-6 text-gray-600" />
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
@@ -470,7 +457,11 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
                 <Card key={hospital.id} className="p-6 hover:shadow-lg transition-shadow bg-white">
                   <div className="flex flex-col lg:flex-row gap-6">
                     {/* Hospital Image Frame */}
-                    <div className="w-full lg:w-48 h-40 rounded-lg bg-gray-100 border-2 border-gray-200 flex-shrink-0"></div>
+                    <img
+                      src={hospital.image}
+                      alt={hospital.name}
+                      className="w-full lg:w-48 h-40 rounded-lg object-cover border-2 border-gray-200 flex-shrink-0"
+                    />
 
                     {/* Hospital Details */}
                     <div className="flex-1 space-y-3">

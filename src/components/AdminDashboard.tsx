@@ -37,7 +37,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
   const adminData = {
     name: 'Admin',
     hospital: 'Viksit Health Hospital',
-    image: 'https://images.unsplash.com/photo-1652471943570-f3590a4e52ed?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMHByb2Zlc3Npb25hbCUyMGhlYWRzaG90fGVufDF8fHx8MTc2ODI2MTI0OHww&ixlib=rb-4.1.0&q=80&w=1080',
+    image: 'https://images.pexels.com/photos/28216688/pexels-photo-28216688.png',
   };
 
   // Trending Diseases Data

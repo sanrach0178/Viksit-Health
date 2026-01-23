@@ -62,7 +62,7 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
 
   const patientData = {
     name: 'Sarah Johnson',
-    profileImage: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdmF0YXIlMjBzaWxob3VldHRlfGVufDF8fHx8MTc2ODMwODM4MHww&ixlib=rb-4.1.0&q=80&w=1080',
+    profileImage: 'https://unsplash.com/@gilangyuda14?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">gilang',
   };
 
   const aiPrediction = {
@@ -74,23 +74,23 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
   const hospitals: Hospital[] = [
     {
       id: 1,
-      name: 'City Central Hospital',
+      name: 'AIIMS',
       distance: '2.3 km',
       fees: 500,
       beds: { free: 12, occupied: 45, cleaning: 3 },
       waitingTime: '15 min',
       rating: 4.8,
-      image: 'https://images.unsplash.com/photo-1551190822-a9333d879b1f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxob3NwaXRhbCUyMGJ1aWxkaW5nfGVufDF8fHx8MTc2ODMxMzM4MHww&ixlib=rb-4.1.0&q=80&w=1080',
+      image: 'https://images.pexels.com/photos/7250797/pexels-photo-7250797.jpeg',
     },
     {
       id: 2,
-      name: 'Green Valley Medical Center',
+      name: 'Gentral Medical Center',
       distance: '3.8 km',
       fees: 700,
       beds: { free: 8, occupied: 38, cleaning: 4 },
       waitingTime: '25 min',
       rating: 4.9,
-      image: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwY2VudGVyJTIwYnVpbGRpbmd8ZW58MXx8fHwxNzY4MzEzMzgwfDA&ixlib=rb-4.1.0&q=80&w=1080',
+      image: 'https://images.pexels.com/photos/11722768/pexels-photo-11722768.jpeg',
     },
     {
       id: 3,
@@ -100,19 +100,19 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
       beds: { free: 5, occupied: 52, cleaning: 2 },
       waitingTime: '10 min',
       rating: 4.7,
-      image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBob3NwaXRhbCUyMGZhY2FkfGVufDF8fHx8MTc2ODMxMzM4MHww&ixlib=rb-4.1.0&q=80&w=1080',
+      image: 'https://images.pexels.com/photos/668300/pexels-photo-668300.jpeg',
     },
   ];
 
   const doctors: Doctor[] = [
     {
       id: 1,
-      name: 'Dr. Michael Chen',
+      name: 'Dr. Munna bhai',
       specialty: 'General Physician',
       experience: 15,
       rating: 4.8,
       availableSlots: ['10:00 AM', '11:30 AM', '2:00 PM', '4:30 PM'],
-      image: 'https://images.unsplash.com/photo-1758691463626-0ab959babe00?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwZG9jdG9yJTIwcHJvZmVzc2lvbmFsfGVufDF8fHx8MTc2ODMwODM4MHww&ixlib=rb-4.1.0&q=80&w=1080',
+      image: 'https://images.pexels.com/photos/8460157/pexels-photo-8460157.jpeg',
       hospitalId: 1,
     },
     {
@@ -122,7 +122,7 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
       experience: 12,
       rating: 4.9,
       availableSlots: ['9:30 AM', '1:00 PM', '3:30 PM', '5:00 PM'],
-      image: 'https://images.unsplash.com/photo-1652471943570-f3590a4e52ed?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMHByb2Zlc3Npb25hbCUyMGhlYWRzaG90fGVufDF8fHx8MTc2ODI2MTI0OHww&ixlib=rb-4.1.0&q=80&w=1080',
+      image: 'https://images.pexels.com/photos/28216688/pexels-photo-28216688.png',
       hospitalId: 1,
     },
     {
@@ -132,7 +132,7 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
       experience: 18,
       rating: 4.7,
       availableSlots: ['11:00 AM', '2:30 PM', '4:00 PM'],
-      image: 'https://images.unsplash.com/photo-1758691463626-0ab959babe00?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwZG9jdG9yJTIwcHJvZmVzc2lvbmFsfGVufDF8fHx8MTc2ODMwODM4MHww&ixlib=rb-4.1.0&q=80&w=1080',
+      image: 'https://images.pexels.com/photos/28216688/pexels-photo-28216688.png',
       hospitalId: 1,
     },
   ];

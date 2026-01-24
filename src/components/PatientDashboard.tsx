@@ -61,8 +61,8 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
 
   const patientData = {
-    name: 'Sarah Johnson',
-    profileImage: 'https://unsplash.com/@gilangyuda14?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">gilang',
+    name: 'Vaibhav Datta',
+    profileimage: 'https://i.pinimg.com/736x/3c/ae/07/3cae079ca0b9e55ec6bfc1b358c9b1e2.jpg',
   };
 
   const aiPrediction = {
@@ -84,7 +84,7 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
     },
     {
       id: 2,
-      name: 'Gentral Medical Center',
+      name: 'Central Medical Center',
       distance: '3.8 km',
       fees: 700,
       beds: { free: 8, occupied: 38, cleaning: 4 },
@@ -107,12 +107,12 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
   const doctors: Doctor[] = [
     {
       id: 1,
-      name: 'Dr. Munna bhai',
+      name: 'Dr. Mrinal',
       specialty: 'General Physician',
-      experience: 15,
+      experience: 5,
       rating: 4.8,
       availableSlots: ['10:00 AM', '11:30 AM', '2:00 PM', '4:30 PM'],
-      image: 'https://images.pexels.com/photos/8460157/pexels-photo-8460157.jpeg',
+      image: 'https://i.pinimg.com/736x/3c/ae/07/3cae079ca0b9e55ec6bfc1b358c9b1e2.jpg',
       hospitalId: 1,
     },
     {
@@ -122,17 +122,17 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
       experience: 12,
       rating: 4.9,
       availableSlots: ['9:30 AM', '1:00 PM', '3:30 PM', '5:00 PM'],
-      image: 'https://images.pexels.com/photos/28216688/pexels-photo-28216688.png',
+      image: 'https://i.pinimg.com/736x/3c/ae/07/3cae079ca0b9e55ec6bfc1b358c9b1e2.jpg',
       hospitalId: 1,
     },
     {
       id: 3,
-      name: 'Dr. Rajesh Kumar',
-      specialty: 'Internal Medicine',
+      name: 'Dr. Kashish',
+      specialty: 'Internal Medicine', 
       experience: 18,
       rating: 4.7,
       availableSlots: ['11:00 AM', '2:30 PM', '4:00 PM'],
-      image: 'https://images.pexels.com/photos/28216688/pexels-photo-28216688.png',
+      image: 'https://i.pinimg.com/736x/3c/ae/07/3cae079ca0b9e55ec6bfc1b358c9b1e2.jpg',
       hospitalId: 1,
     },
   ];

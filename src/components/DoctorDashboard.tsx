@@ -34,26 +34,26 @@ export function DoctorDashboard({ onBack }: DoctorDashboardProps) {
   const [notes, setNotes] = useState('');
 
   const doctorData = {
-    name: 'Dr. Michael Chen',
-    specialty: 'General Physician',
+    name: 'Dr. Shristi',
+    specialty: 'Cardiac',
     experience: 15,
     rating: 4.8,
     totalPatients: 2500,
-    image: 'https://images.pexels.com/photos/28216688/pexels-photo-28216688.png',
+    image: 'https://i.pinimg.com/736x/3c/ae/07/3cae079ca0b9e55ec6bfc1b358c9b1e2.jpg',
     status: 'Available',
   };
 
   const patients: Patient[] = [
     {
       id: 1,
-      name: 'Sarah Johnson',
+      name: 'Sonal Kumari',
       age: 28,
       gender: 'Female',
       disease: 'Seasonal Flu',
       message: 'Severe headache and fever since yesterday',
       appointmentTime: '10:30 AM',
       status: 'waiting',
-      image: 'https://images.pexels.com/photos/28216688/pexels-photo-28216688.png',
+      image: 'https://i.pinimg.com/736x/3c/ae/07/3cae079ca0b9e55ec6bfc1b358c9b1e2.jpg',
       medicalHistory: ['Allergic to Penicillin', 'Had flu vaccine in 2025', 'No chronic conditions'],
       pastMedicines: ['Paracetamol 500mg', 'Cetirizine 10mg', 'Vitamin C'],
       aiSummary: 'Patient presents with acute flu symptoms. History shows good response to standard flu treatment. No red flags. Recommended: Symptomatic treatment with rest and hydration.',
@@ -67,7 +67,7 @@ export function DoctorDashboard({ onBack }: DoctorDashboardProps) {
       message: 'Regular checkup for blood pressure monitoring',
       appointmentTime: '11:00 AM',
       status: 'waiting',
-      image: 'https://images.pexels.com/photos/28216688/pexels-photo-28216688.png',
+      image: 'https://i.pinimg.com/736x/3c/ae/07/3cae079ca0b9e55ec6bfc1b358c9b1e2.jpg',
       medicalHistory: ['Hypertension diagnosed 2023', 'Family history of heart disease', 'Non-smoker'],
       pastMedicines: ['Amlodipine 5mg', 'Atorvastatin 10mg'],
       aiSummary: 'Long-term hypertension patient with stable condition on current medication. BP trends show good control. Continue current regimen with regular monitoring.',
@@ -81,7 +81,7 @@ export function DoctorDashboard({ onBack }: DoctorDashboardProps) {
       message: 'Recurring migraine attacks, need pain management',
       appointmentTime: '11:30 AM',
       status: 'waiting',
-      image: 'https://images.pexels.com/photos/28216688/pexels-photo-28216688.png',
+      image: 'https://i.pinimg.com/736x/3c/ae/07/3cae079ca0b9e55ec6bfc1b358c9b1e2.jpg',
       medicalHistory: ['Chronic migraine since 2020', 'Stress-related triggers', 'No food allergies'],
       pastMedicines: ['Sumatriptan 50mg', 'Propranolol 40mg'],
       aiSummary: 'Chronic migraine patient with known stress triggers. Previous treatment shows moderate success. Consider lifestyle modifications and prophylactic therapy adjustment.',
@@ -95,7 +95,7 @@ export function DoctorDashboard({ onBack }: DoctorDashboardProps) {
       message: 'Blood sugar levels fluctuating, need consultation',
       appointmentTime: '12:00 PM',
       status: 'waiting',
-      image: 'https://images.pexels.com/photos/28216688/pexels-photo-28216688.png',
+      image: 'https://i.pinimg.com/736x/3c/ae/07/3cae079ca0b9e55ec6bfc1b358c9b1e2.jpg',
       medicalHistory: ['Type 2 Diabetes diagnosed 2019', 'Overweight (BMI 28)', 'Sedentary lifestyle'],
       pastMedicines: ['Metformin 500mg', 'Glimepiride 2mg'],
       aiSummary: 'Diabetic patient with suboptimal glycemic control. Recent HbA1c suggests need for medication adjustment and lifestyle intervention. Referral to dietitian recommended.',

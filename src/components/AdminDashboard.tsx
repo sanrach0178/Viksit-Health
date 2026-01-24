@@ -37,7 +37,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
   const adminData = {
     name: 'Admin',
     hospital: 'Viksit Health Hospital',
-    image: 'https://images.pexels.com/photos/28216688/pexels-photo-28216688.png',
+    image: 'https://i.pinimg.com/736x/3c/ae/07/3cae079ca0b9e55ec6bfc1b358c9b1e2.jpg',
   };
 
   // Trending Diseases Data
@@ -51,11 +51,11 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
   ];
 
   const diseaseDistribution = [
-    { name: 'Seasonal Flu', value: 280, color: '#3b82f6' },
-    { name: 'Hypertension', value: 112, color: '#ef4444' },
+    { name: 'Cough', value: 280, color: '#3b82f6' },
+    { name: 'Jaundice', value: 112, color: '#ef4444' },
     { name: 'Diabetes', value: 103, color: '#f59e0b' },
-    { name: 'COVID-19', value: 32, color: '#8b5cf6' },
-    { name: 'Others', value: 95, color: '#10b981' },
+    { name: 'Body Pain', value: 32, color: '#8b5cf6' },
+    { name: 'Malaria', value: 95, color: '#10b981' },
   ];
 
   // Medicine Stock Data
@@ -253,7 +253,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
                 </Badge>
               </div>
               <p className="text-3xl mb-1">₹6.2L</p>
-              <p className="text-sm text-orange-100">Revenue (Jan)</p>
+              <p className="text-sm text-orange-100">Revenue (January)</p>
             </Card>
 
             <Card className="p-6 bg-gradient-to-br from-purple-500 to-purple-600 text-white">
@@ -565,7 +565,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
                     <div className="flex items-start gap-3 mb-3">
                       <Avatar className="w-12 h-12">
                         <AvatarImage 
-                          src="https://images.unsplash.com/photo-1758691463626-0ab959babe00?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwZG9jdG9yJTIwcHJvZmVzc2lvbmFsfGVufDF8fHx8MTc2ODMwODM4MHww&ixlib=rb-4.1.0&q=80&w=1080" 
+                          src="https://i.pinimg.com/736x/3c/ae/07/3cae079ca0b9e55ec6bfc1b358c9b1e2.jpg" 
                           alt={doctor.name} 
                         />
                         <AvatarFallback>{doctor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>

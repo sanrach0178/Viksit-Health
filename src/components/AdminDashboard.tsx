@@ -138,8 +138,8 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
                 key={item.id}
                 onClick={() => setSelectedView(item.id)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${selectedView === item.id
-                    ? 'bg-indigo-50 text-indigo-700'
-                    : 'text-gray-700 hover:bg-gray-50'
+                  ? 'bg-indigo-50 text-indigo-700'
+                  : 'text-gray-700 hover:bg-gray-50'
                   }`}
               >
                 <item.icon className="w-5 h-5" />
@@ -254,7 +254,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
                         fill="#8884d8"
                         dataKey="value"
                       >
-                        {diseaseDistribution.map((entry, index) => (
+                        {diseaseDistribution.map((entry: any, index: number) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                       </Pie>

@@ -204,7 +204,19 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
           </div>
 
           <div className="flex items-center gap-4">
-            <Select value={selectedView} onValueChange={setSelectedView}>
+            <Select
+              value={selectedView}
+              onValueChange={(value) =>
+                setSelectedView(
+                  value as
+                  | 'overview'
+                  | 'diseases'
+                  | 'inventory'
+                  | 'reports'
+                  | 'doctors'
+                )
+              }
+            >
               <SelectTrigger className="w-[180px]">
                 <SelectValue />
               </SelectTrigger>

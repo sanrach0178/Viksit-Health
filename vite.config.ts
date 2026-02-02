@@ -16,12 +16,11 @@ export default defineConfig({
   build: {
     target: 'esnext',
     outDir: 'build',
-    minify: 'terser',
+    minify: 'esbuild',
     sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks: {
-          'recharts-vendor': ['recharts'],
           'ui-vendor': ['@radix-ui/react-dialog', '@radix-ui/react-select'],
         },
       },

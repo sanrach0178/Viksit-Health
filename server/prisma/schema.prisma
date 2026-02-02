@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Hospital {
+  id          Int      @id @default(autoincrement())
+  name        String
+  distanceKm  Float
+  fees        Int
+  waitingMins Int
+  rating      Float
+  imageUrl    String
+
+  bedsFree     Int
+  bedsOccupied Int
+  bedsCleaning Int
+
+  doctors      Doctor[]
+  appointments Appointment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Doctor {
+  id          Int      @id @default(autoincrement())
+  name        String
+  specialty   String
+  experience  Int
+  rating      Float
+  imageUrl    String
+  slotsJson   String   // JSON array of slots
+
+  hospital   Hospital @relation(fields: [hospitalId], references: [id])
+  hospitalId Int
+
+  appointments Appointment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Appointment {
+  id         Int      @id @default(autoincrement())
+  patientName String
+  symptoms    String
+  slot        String
+  status      String   @default("confirmed")
+
+  hospital   Hospital @relation(fields: [hospitalId], references: [id])
+  hospitalId Int
+
+  doctor     Doctor @relation(fields: [doctorId], references: [id])
+  doctorId   Int
+
+  consultation Consultation?
+  AppointmentPatient AppointmentPatient[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Patient {
+  id      Int    @id @default(autoincrement())
+  name    String
+  @@unique([name])
+  age     Int
+  gender  String
+  imageUrl String
+
+  medicalHistoryJson String
+  pastMedicinesJson  String
+  aiSummary          String?
+
+  appointments AppointmentPatient[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Join table so multiple appointments can refer to a patient record
+model AppointmentPatient {
+  id            Int @id @default(autoincrement())
+  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  appointmentId Int @unique
+  patient       Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  patientId     Int
+}
+
+model Consultation {
+  id            Int @id @default(autoincrement())
+  diagnosis     String
+  prescription  String
+  notes         String
+
+  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  appointmentId Int @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Medicine {
+  id           Int    @id @default(autoincrement())
+  name         String
+  stock        Int
+  price        Float
+  expiry       String
+  status       String
+  reorderLevel Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DiseaseTrendPoint {
+  id          Int    @id @default(autoincrement())
+  month       String
+  flu         Int
+  diabetes    Int
+  hypertension Int
+  covid       Int
+}
+
+model RevenuePoint {
+  id       Int    @id @default(autoincrement())
+  month    String
+  revenue  Int
+  expenses Int
+}
+
+model MedicineUsagePoint {
+  id        Int    @id @default(autoincrement())
+  category  String
+  usage     Int
+  available Int
+}

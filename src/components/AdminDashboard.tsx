@@ -1,19 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Bell, Building2, TrendingUp, Package, FileText, Users, AlertTriangle, Download, Activity, DollarSign, Sparkles, ChevronDown, Star } from 'lucide-react';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
-import { 
-  LineChart, 
-  Line, 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
   ResponsiveContainer,
   PieChart,
   Pie,
@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select';
+import { apiCall } from '../services/apiClient';
 
 interface AdminDashboardProps {
   onBack: () => void;
@@ -33,106 +34,36 @@ interface AdminDashboardProps {
 
 export function AdminDashboard({ onBack }: AdminDashboardProps) {
   const [selectedView, setSelectedView] = useState('overview');
+  const [loading, setLoading] = useState(false);
+  const [dashboard, setDashboard] = useState<any>(null);
 
   const adminData = {
     name: 'Admin',
     hospital: 'Viksit Health Hospital',
-    image: 'https://images.unsplash.com/photo-1652471943570-f3590a4e52ed?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMHByb2Zlc3Npb25hbCUyMGhlYWRzaG90fGVufDF8fHx8MTc2ODI2MTI0OHww&ixlib=rb-4.1.0&q=80&w=1080',
+    image: 'https://i.pinimg.com/736x/3c/ae/07/3cae079ca0b9e55ec6bfc1b358c9b1e2.jpg',
   };
 
-  // Trending Diseases Data
-  const diseaseTrendData = [
-    { month: 'Aug', flu: 120, diabetes: 85, hypertension: 95, covid: 45 },
-    { month: 'Sep', flu: 135, diabetes: 88, hypertension: 98, covid: 38 },
-    { month: 'Oct', flu: 165, diabetes: 92, hypertension: 102, covid: 42 },
-    { month: 'Nov', flu: 198, diabetes: 96, hypertension: 105, covid: 35 },
-    { month: 'Dec', flu: 245, diabetes: 99, hypertension: 108, covid: 28 },
-    { month: 'Jan', flu: 280, diabetes: 103, hypertension: 112, covid: 32 },
-  ];
+  const fetchDashboard = async () => {
+    setLoading(true);
+    try {
+      const data = await apiCall<any>('/api/admin/dashboard');
+      setDashboard(data);
+    } catch (error) {
+      console.error("Failed to load admin dashboard", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const diseaseDistribution = [
-    { name: 'Seasonal Flu', value: 280, color: '#3b82f6' },
-    { name: 'Hypertension', value: 112, color: '#ef4444' },
-    { name: 'Diabetes', value: 103, color: '#f59e0b' },
-    { name: 'COVID-19', value: 32, color: '#8b5cf6' },
-    { name: 'Others', value: 95, color: '#10b981' },
-  ];
+  useEffect(() => {
+    void fetchDashboard();
+  }, []);
 
-  // Medicine Stock Data
-  const medicineStock = [
-    { 
-      id: 1, 
-      name: 'Paracetamol 500mg', 
-      stock: 2450, 
-      price: 2.5, 
-      expiry: 'Dec 2026', 
-      status: 'good',
-      reorderLevel: 500,
-    },
-    { 
-      id: 2, 
-      name: 'Amoxicillin 250mg', 
-      stock: 1820, 
-      price: 12.0, 
-      expiry: 'Mar 2026', 
-      status: 'good',
-      reorderLevel: 500,
-    },
-    { 
-      id: 3, 
-      name: 'Metformin 500mg', 
-      stock: 380, 
-      price: 8.5, 
-      expiry: 'Jun 2026', 
-      status: 'low',
-      reorderLevel: 500,
-    },
-    { 
-      id: 4, 
-      name: 'Amlodipine 5mg', 
-      stock: 1520, 
-      price: 15.0, 
-      expiry: 'Sep 2026', 
-      status: 'good',
-      reorderLevel: 500,
-    },
-    { 
-      id: 5, 
-      name: 'Azithromycin 250mg', 
-      stock: 890, 
-      price: 18.5, 
-      expiry: 'Aug 2026', 
-      status: 'good',
-      reorderLevel: 500,
-    },
-    { 
-      id: 6, 
-      name: 'Insulin Glargine', 
-      stock: 145, 
-      price: 125.0, 
-      expiry: 'Feb 2026', 
-      status: 'critical',
-      reorderLevel: 200,
-    },
-  ];
-
-  // Financial Data
-  const monthlyRevenue = [
-    { month: 'Aug', revenue: 450000, expenses: 320000 },
-    { month: 'Sep', revenue: 480000, expenses: 325000 },
-    { month: 'Oct', revenue: 510000, expenses: 340000 },
-    { month: 'Nov', revenue: 525000, expenses: 345000 },
-    { month: 'Dec', revenue: 580000, expenses: 360000 },
-    { month: 'Jan', revenue: 620000, expenses: 375000 },
-  ];
-
-  const medicineUsageData = [
-    { category: 'Antibiotics', usage: 35, available: 65 },
-    { category: 'Analgesics', usage: 55, available: 45 },
-    { category: 'Diabetes', usage: 42, available: 58 },
-    { category: 'Cardiac', usage: 38, available: 62 },
-    { category: 'Respiratory', usage: 48, available: 52 },
-  ];
+  const diseaseTrendData = useMemo(() => dashboard?.diseaseTrendData ?? [], [dashboard]);
+  const diseaseDistribution = useMemo(() => dashboard?.diseaseDistribution ?? [], [dashboard]);
+  const medicineStock = useMemo(() => dashboard?.medicineStock ?? [], [dashboard]);
+  const monthlyRevenue = useMemo(() => dashboard?.monthlyRevenue ?? [], [dashboard]);
+  const medicineUsageData = useMemo(() => dashboard?.medicineUsageData ?? [], [dashboard]);
 
   const getStockStatusColor = (status: string) => {
     switch (status) {
@@ -206,11 +137,10 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
               <button
                 key={item.id}
                 onClick={() => setSelectedView(item.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                  selectedView === item.id
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${selectedView === item.id
                     ? 'bg-indigo-50 text-indigo-700'
                     : 'text-gray-700 hover:bg-gray-50'
-                }`}
+                  }`}
               >
                 <item.icon className="w-5 h-5" />
                 <span>{item.label}</span>
@@ -221,6 +151,11 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
 
         {/* Main Content Area */}
         <div className="flex-1 p-6 space-y-6">
+          {loading && (
+            <Card className="p-4 bg-white">
+              <p className="text-sm text-gray-600">Loading dashboard…</p>
+            </Card>
+          )}
           {/* Key Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white">
@@ -230,7 +165,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
                   +12%
                 </Badge>
               </div>
-              <p className="text-3xl mb-1">1,248</p>
+              <p className="text-3xl mb-1">{dashboard?.metrics?.totalPatients ?? 0}</p>
               <p className="text-sm text-blue-100">Total Patients (Jan)</p>
             </Card>
 
@@ -241,7 +176,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
                   Live
                 </Badge>
               </div>
-              <p className="text-3xl mb-1">45</p>
+              <p className="text-3xl mb-1">{dashboard?.metrics?.activeConsultations ?? 0}</p>
               <p className="text-sm text-green-100">Active Consultations</p>
             </Card>
 
@@ -252,7 +187,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
                   +8%
                 </Badge>
               </div>
-              <p className="text-3xl mb-1">₹6.2L</p>
+              <p className="text-3xl mb-1">₹{(((dashboard?.metrics?.revenueJan ?? 0) as number) / 100000).toFixed(1)}L</p>
               <p className="text-sm text-orange-100">Revenue (Jan)</p>
             </Card>
 
@@ -263,7 +198,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
                   Critical
                 </Badge>
               </div>
-              <p className="text-3xl mb-1">3</p>
+              <p className="text-3xl mb-1">{dashboard?.metrics?.lowStockAlerts ?? 0}</p>
               <p className="text-sm text-purple-100">Low Stock Alerts</p>
             </Card>
           </div>
@@ -397,7 +332,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
                     </tr>
                   </thead>
                   <tbody>
-                    {medicineStock.map((med) => (
+                    {medicineStock.map((med: any) => (
                       <tr key={med.id} className="border-b hover:bg-gray-50">
                         <td className="py-3 px-4 text-sm text-gray-800">{med.name}</td>
                         <td className="py-3 px-4 text-sm text-gray-800 text-right">
@@ -463,7 +398,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
                   <YAxis />
-                  <Tooltip 
+                  <Tooltip
                     formatter={(value: number) => `₹${(value / 1000).toFixed(0)}K`}
                   />
                   <Legend />
@@ -564,9 +499,9 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
                   <Card key={idx} className="p-4 hover:shadow-md transition-shadow">
                     <div className="flex items-start gap-3 mb-3">
                       <Avatar className="w-12 h-12">
-                        <AvatarImage 
-                          src="https://images.unsplash.com/photo-1758691463626-0ab959babe00?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwZG9jdG9yJTIwcHJvZmVzc2lvbmFsfGVufDF8fHx8MTc2ODMwODM4MHww&ixlib=rb-4.1.0&q=80&w=1080" 
-                          alt={doctor.name} 
+                        <AvatarImage
+                          src="https://images.unsplash.com/photo-1758691463626-0ab959babe00?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwZG9jdG9yJTIwcHJvZmVzc2lvbmFsfGVufDF8fHx8MTc2ODMwODM4MHww&ixlib=rb-4.1.0&q=80&w=1080"
+                          alt={doctor.name}
                         />
                         <AvatarFallback>{doctor.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                       </Avatar>
@@ -576,8 +511,8 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
                       </div>
                       <Badge className={
                         doctor.status === 'Available' ? 'bg-green-100 text-green-800' :
-                        doctor.status === 'Busy' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-gray-100 text-gray-800'
+                          doctor.status === 'Busy' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-gray-100 text-gray-800'
                       }>
                         {doctor.status}
                       </Badge>

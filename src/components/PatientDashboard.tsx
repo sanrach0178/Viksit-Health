@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { 
   Bell, 
   MapPin, 
@@ -21,6 +21,9 @@ import { Button } from './ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
+import { apiCall, ApiError } from '../services/apiClient';
+import { logger } from '../services/logger';
+import { sanitizeInput } from '../utils/validation';
 
 interface PatientDashboardProps {
   onBack: () => void;
@@ -59,6 +62,11 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [bookingConfirmed, setBookingConfirmed] = useState(false);
+  const [hospitals, setHospitals] = useState<Hospital[]>([]);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [loadingHospitals, setLoadingHospitals] = useState(false);
+  const [loadingDoctors, setLoadingDoctors] = useState(false);
+  const [bookingError, setBookingError] = useState<string | null>(null);
 
   const patientData = {
     name: 'Sarah Johnson',
@@ -71,100 +79,99 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
     confidence: 92,
   };
 
-  const hospitals: Hospital[] = [
-    {
-      id: 1,
-      name: 'City Central Hospital',
-      distance: '2.3 km',
-      fees: 500,
-      beds: { free: 12, occupied: 45, cleaning: 3 },
-      waitingTime: '15 min',
-      rating: 4.8,
-      image: 'https://images.unsplash.com/photo-1551190822-a9333d879b1f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxob3NwaXRhbCUyMGJ1aWxkaW5nfGVufDF8fHx8MTc2ODMxMzM4MHww&ixlib=rb-4.1.0&q=80&w=1080',
-    },
-    {
-      id: 2,
-      name: 'Green Valley Medical Center',
-      distance: '3.8 km',
-      fees: 700,
-      beds: { free: 8, occupied: 38, cleaning: 4 },
-      waitingTime: '25 min',
-      rating: 4.9,
-      image: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwY2VudGVyJTIwYnVpbGRpbmd8ZW58MXx8fHwxNzY4MzEzMzgwfDA&ixlib=rb-4.1.0&q=80&w=1080',
-    },
-    {
-      id: 3,
-      name: 'MediCare Plus Hospital',
-      distance: '1.5 km',
-      fees: 400,
-      beds: { free: 5, occupied: 52, cleaning: 2 },
-      waitingTime: '10 min',
-      rating: 4.7,
-      image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBob3NwaXRhbCUyMGZhY2FkfGVufDF8fHx8MTc2ODMxMzM4MHww&ixlib=rb-4.1.0&q=80&w=1080',
-    },
-  ];
+  const hospitalDoctors = useMemo(() => {
+    if (!selectedHospital) return [];
+    return doctors.filter(d => d.hospitalId === selectedHospital.id);
+  }, [doctors, selectedHospital]);
 
-  const doctors: Doctor[] = [
-    {
-      id: 1,
-      name: 'Dr. Michael Chen',
-      specialty: 'General Physician',
-      experience: 15,
-      rating: 4.8,
-      availableSlots: ['10:00 AM', '11:30 AM', '2:00 PM', '4:30 PM'],
-      image: 'https://images.unsplash.com/photo-1758691463626-0ab959babe00?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwZG9jdG9yJTIwcHJvZmVzc2lvbmFsfGVufDF8fHx8MTc2ODMwODM4MHww&ixlib=rb-4.1.0&q=80&w=1080',
-      hospitalId: 1,
-    },
-    {
-      id: 2,
-      name: 'Dr. Priya Sharma',
-      specialty: 'General Medicine',
-      experience: 12,
-      rating: 4.9,
-      availableSlots: ['9:30 AM', '1:00 PM', '3:30 PM', '5:00 PM'],
-      image: 'https://images.unsplash.com/photo-1652471943570-f3590a4e52ed?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMHByb2Zlc3Npb25hbCUyMGhlYWRzaG90fGVufDF8fHx8MTc2ODI2MTI0OHww&ixlib=rb-4.1.0&q=80&w=1080',
-      hospitalId: 1,
-    },
-    {
-      id: 3,
-      name: 'Dr. Rajesh Kumar',
-      specialty: 'Internal Medicine',
-      experience: 18,
-      rating: 4.7,
-      availableSlots: ['11:00 AM', '2:30 PM', '4:00 PM'],
-      image: 'https://images.unsplash.com/photo-1758691463626-0ab959babe00?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwZG9jdG9yJTIwcHJvZmVzc2lvbmFsfGVufDF8fHx8MTc2ODMwODM4MHww&ixlib=rb-4.1.0&q=80&w=1080',
-      hospitalId: 1,
-    },
-  ];
+  const fetchHospitals = async (): Promise<void> => {
+    setLoadingHospitals(true);
+    try {
+      const data = await apiCall<Hospital[]>("/api/hospitals");
+      setHospitals(data);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        logger.error(`Failed to load hospitals: ${error.message}`);
+      }
+      setHospitals([]);
+    } finally {
+      setLoadingHospitals(false);
+    }
+  };
 
-  const handleFindHospital = () => {
-    if (symptoms.trim()) {
+  const fetchDoctors = async (): Promise<void> => {
+    setLoadingDoctors(true);
+    try {
+      const data = await apiCall<Doctor[]>("/api/doctors");
+      setDoctors(data);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        logger.error(`Failed to load doctors: ${error.message}`);
+      }
+      setDoctors([]);
+    } finally {
+      setLoadingDoctors(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!showResults) return;
+    void fetchHospitals();
+    void fetchDoctors();
+  }, [showResults]);
+
+  const handleFindHospital = (): void => {
+    const sanitized = sanitizeInput(symptoms);
+    if (sanitized.trim()) {
       setShowResults(true);
       setSelectedHospital(null);
       setSelectedDoctor(null);
       setBookingConfirmed(false);
+      setBookingError(null);
     }
   };
 
-  const handleViewDoctors = (hospital: Hospital) => {
+  const handleViewDoctors = (hospital: Hospital): void => {
     setSelectedHospital(hospital);
     setSelectedDoctor(null);
     setSelectedSlot(null);
     setBookingConfirmed(false);
+    setBookingError(null);
   };
 
-  const handleBookAppointment = (doctor: Doctor, slot: string) => {
+  const handleBookAppointment = async (doctor: Doctor, slot: string): Promise<void> => {
+    if (!selectedHospital) return;
+    setBookingError(null);
     setSelectedDoctor(doctor);
     setSelectedSlot(slot);
-    setBookingConfirmed(true);
+
+    try {
+      await apiCall("/api/appointments", {
+        method: "POST",
+        body: JSON.stringify({
+          patientName: sanitizeInput(patientData.name),
+          symptoms: sanitizeInput(symptoms),
+          hospitalId: selectedHospital.id,
+          doctorId: doctor.id,
+          slot,
+        }),
+      });
+      setBookingConfirmed(true);
+      logger.info('Appointment booked successfully', { doctorId: doctor.id });
+    } catch (error) {
+      const message = error instanceof ApiError ? error.message : 'Booking failed. Please try again.';
+      setBookingError(message);
+      logger.error('Booking failed', error);
+    }
   };
 
-  const handleBackToSymptoms = () => {
+  const handleBackToSymptoms = (): void => {
     setShowResults(false);
     setSelectedHospital(null);
     setSelectedDoctor(null);
     setBookingConfirmed(false);
     setSymptoms('');
+    setBookingError(null);
   };
 
   // Show Booking Confirmation
@@ -272,8 +279,6 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
 
   // Show Doctor Selection
   if (selectedHospital && !bookingConfirmed) {
-    const hospitalDoctors = doctors.filter(d => d.hospitalId === selectedHospital.id);
-    
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
         {/* Top Bar */}
@@ -307,6 +312,18 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
             <h2 className="text-gray-800 mb-2">Select Doctor</h2>
             <p className="text-gray-600">{selectedHospital.name}</p>
           </div>
+
+          {loadingDoctors && (
+            <Card className="p-4 bg-white mb-6">
+              <p className="text-sm text-gray-600">Loading doctors…</p>
+            </Card>
+          )}
+
+          {bookingError && (
+            <Card className="p-4 bg-red-50 border-red-200 mb-6">
+              <p className="text-sm text-red-800">{bookingError}</p>
+            </Card>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {hospitalDoctors.map((doctor) => (
@@ -452,6 +469,12 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
           <div>
             <h2 className="text-gray-800 mb-4">Nearby Hospitals</h2>
             
+            {loadingHospitals && (
+              <Card className="p-4 bg-white mb-4">
+                <p className="text-sm text-gray-600">Loading hospitals…</p>
+              </Card>
+            )}
+
             <div className="space-y-4">
               {hospitals.map((hospital) => (
                 <Card key={hospital.id} className="p-6 hover:shadow-lg transition-shadow bg-white">
@@ -519,6 +542,129 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
                   </div>
                 </Card>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* Doctor Selection - Shown when hospital selected */}
+        {selectedHospital && !bookingConfirmed && (
+          <div>
+            <h2 className="text-gray-800 mb-4">Select Doctor - {selectedHospital.name}</h2>
+            
+            {loadingDoctors && (
+              <Card className="p-4 bg-white mb-4">
+                <p className="text-sm text-gray-600">Loading doctors…</p>
+              </Card>
+            )}
+
+            {bookingError && (
+              <Card className="p-4 bg-red-50 border-red-200 mb-6">
+                <p className="text-sm text-red-800">{bookingError}</p>
+              </Card>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {hospitalDoctors.map((doctor) => (
+                <Card key={doctor.id} className="p-5 hover:shadow-lg transition-shadow bg-white">
+                  <div className="flex items-start gap-3 mb-4">
+                    <Avatar className="w-16 h-16">
+                      <AvatarImage src={selectedHospital.image} alt={selectedHospital.name} />
+                      <AvatarFallback>{selectedHospital.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <h3 className="text-gray-800 mb-1">{doctor.name}</h3>
+                      <p className="text-sm text-gray-600 mb-2">{doctor.specialty}</p>
+                      <div className="flex items-center gap-3 text-sm text-gray-600">
+                        <div className="flex items-center gap-1">
+                          <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                          <span>{doctor.rating}</span>
+                        </div>
+                        <span>•</span>
+                        <span>{doctor.experience} years</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <p className="text-sm text-gray-700 mb-2">Available Slots</p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {doctor.availableSlots.map((slot) => (
+                        <button
+                          key={slot}
+                          onClick={() => handleBookAppointment(doctor, slot)}
+                          className="px-3 py-2 text-sm border border-blue-300 rounded-lg hover:bg-blue-50 hover:border-blue-500 transition-colors text-gray-700"
+                        >
+                          {slot}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Booking Confirmation */}
+        {bookingConfirmed && selectedHospital && selectedDoctor && selectedSlot && (
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-4">
+              <CheckCircle className="w-12 h-12 text-green-600" />
+            </div>
+            <h2 className="text-gray-800 mb-2">Booking Confirmed!</h2>
+            <p className="text-gray-600 mb-6">Your appointment has been successfully scheduled</p>
+
+            <Card className="p-6 mb-6 max-w-2xl mx-auto">
+              <div className="space-y-4 text-left">
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Hospital</p>
+                  <div className="flex items-center gap-2">
+                    <Building2 className="w-5 h-5 text-blue-600" />
+                    <p className="text-gray-800">{selectedHospital.name}</p>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Doctor</p>
+                  <div className="flex items-start gap-3">
+                    <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                      <User className="w-6 h-6 text-gray-400" />
+                    </div>
+                    <div>
+                      <p className="text-gray-800">{selectedDoctor.name}</p>
+                      <p className="text-sm text-gray-600">{selectedDoctor.specialty}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Appointment Time</p>
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-5 h-5 text-green-600" />
+                    <p className="text-gray-800">{selectedSlot}</p>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Consultation Fee</p>
+                  <p className="text-2xl text-gray-800">₹{selectedHospital.fees}</p>
+                </div>
+              </div>
+            </Card>
+
+            <div className="flex gap-3 justify-center">
+              <Button 
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+                onClick={handleBackToSymptoms}
+              >
+                Book Another Appointment
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={onBack}
+              >
+                Go to Home
+              </Button>
             </div>
           </div>
         )}

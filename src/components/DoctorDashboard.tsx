@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Bell, Calendar, Star, User, Activity, FileText, Pill, Clock, AlertCircle, CheckCircle, Sparkles } from 'lucide-react';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
@@ -7,6 +7,7 @@ import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 import { Textarea } from './ui/textarea';
 import { Input } from './ui/input';
+import { apiCall } from '../services/apiClient';
 
 interface DoctorDashboardProps {
   onBack: () => void;
@@ -32,6 +33,9 @@ export function DoctorDashboard({ onBack }: DoctorDashboardProps) {
   const [diagnosis, setDiagnosis] = useState('');
   const [prescription, setPrescription] = useState('');
   const [notes, setNotes] = useState('');
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const doctorData = {
     name: 'Dr. Michael Chen',
@@ -43,72 +47,47 @@ export function DoctorDashboard({ onBack }: DoctorDashboardProps) {
     status: 'Available',
   };
 
-  const patients: Patient[] = [
-    {
-      id: 1,
-      name: 'Sarah Johnson',
-      age: 28,
-      gender: 'Female',
-      disease: 'Seasonal Flu',
-      message: 'Severe headache and fever since yesterday',
-      appointmentTime: '10:30 AM',
-      status: 'waiting',
-      image: 'https://images.unsplash.com/photo-1546961329-78bef0414d7c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx5b3VuZyUyMHdvbWFuJTIwcG9ydHJhaXR8ZW58MXx8fHwxNzY4Mjc1MzE0fDA&ixlib=rb-4.1.0&q=80&w=1080',
-      medicalHistory: ['Allergic to Penicillin', 'Had flu vaccine in 2025', 'No chronic conditions'],
-      pastMedicines: ['Paracetamol 500mg', 'Cetirizine 10mg', 'Vitamin C'],
-      aiSummary: 'Patient presents with acute flu symptoms. History shows good response to standard flu treatment. No red flags. Recommended: Symptomatic treatment with rest and hydration.',
-    },
-    {
-      id: 2,
-      name: 'Rajesh Kumar',
-      age: 45,
-      gender: 'Male',
-      disease: 'Hypertension',
-      message: 'Regular checkup for blood pressure monitoring',
-      appointmentTime: '11:00 AM',
-      status: 'waiting',
-      image: 'https://images.unsplash.com/photo-1650174378624-c9ab2c99e512?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwYXRpZW50JTIwaG9zcGl0YWwlMjBwZXJzb258ZW58MXx8fHwxNzY4MzE4ODc4fDA&ixlib=rb-4.1.0&q=80&w=1080',
-      medicalHistory: ['Hypertension diagnosed 2023', 'Family history of heart disease', 'Non-smoker'],
-      pastMedicines: ['Amlodipine 5mg', 'Atorvastatin 10mg'],
-      aiSummary: 'Long-term hypertension patient with stable condition on current medication. BP trends show good control. Continue current regimen with regular monitoring.',
-    },
-    {
-      id: 3,
-      name: 'Priya Sharma',
-      age: 32,
-      gender: 'Female',
-      disease: 'Migraine',
-      message: 'Recurring migraine attacks, need pain management',
-      appointmentTime: '11:30 AM',
-      status: 'waiting',
-      image: 'https://images.unsplash.com/photo-1652471943570-f3590a4e52ed?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMHByb2Zlc3Npb25hbCUyMGhlYWRzaG90fGVufDF8fHx8MTc2ODI2MTI0OHww&ixlib=rb-4.1.0&q=80&w=1080',
-      medicalHistory: ['Chronic migraine since 2020', 'Stress-related triggers', 'No food allergies'],
-      pastMedicines: ['Sumatriptan 50mg', 'Propranolol 40mg'],
-      aiSummary: 'Chronic migraine patient with known stress triggers. Previous treatment shows moderate success. Consider lifestyle modifications and prophylactic therapy adjustment.',
-    },
-    {
-      id: 4,
-      name: 'Amit Patel',
-      age: 55,
-      gender: 'Male',
-      disease: 'Type 2 Diabetes',
-      message: 'Blood sugar levels fluctuating, need consultation',
-      appointmentTime: '12:00 PM',
-      status: 'waiting',
-      image: 'https://images.unsplash.com/photo-1650174378624-c9ab2c99e512?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwYXRpZW50JTIwaG9zcGl0YWwlMjBwZXJzb258ZW58MXx8fHwxNzY4MzE4ODc4fDA&ixlib=rb-4.1.0&q=80&w=1080',
-      medicalHistory: ['Type 2 Diabetes diagnosed 2019', 'Overweight (BMI 28)', 'Sedentary lifestyle'],
-      pastMedicines: ['Metformin 500mg', 'Glimepiride 2mg'],
-      aiSummary: 'Diabetic patient with suboptimal glycemic control. Recent HbA1c suggests need for medication adjustment and lifestyle intervention. Referral to dietitian recommended.',
-    },
-  ];
+  const fetchPatients = async () => {
+    setLoading(true);
+    try {
+      const data = await apiCall<Patient[]>('/api/doctor/patients');
+      setPatients(data);
+    } catch (error) {
+      console.error("Failed to load patients", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void fetchPatients();
+  }, []);
 
   const handleSaveConsultation = () => {
-    // Mock save action
-    alert('Consultation saved successfully!');
-    setSelectedPatient(null);
-    setDiagnosis('');
-    setPrescription('');
-    setNotes('');
+    void (async () => {
+      if (!selectedPatient) return;
+      setSaveError(null);
+      setSaveError(null);
+      try {
+        await apiCall('/api/doctor/consultations', {
+          method: "POST",
+          body: JSON.stringify({
+            appointmentId: selectedPatient.id,
+            diagnosis,
+            prescription,
+            notes,
+          }),
+        });
+
+        await fetchPatients();
+        setSelectedPatient(null);
+        setDiagnosis('');
+        setPrescription('');
+        setNotes('');
+      } catch (error) {
+        setSaveError("Failed to save consultation. Please try again.");
+      }
+    })();
   };
 
   const getStatusColor = (status: string) => {
@@ -214,6 +193,11 @@ export function DoctorDashboard({ onBack }: DoctorDashboardProps) {
         {/* Patient Queue */}
         <div>
           <h3 className="text-gray-800 mb-4">Today's Patients</h3>
+          {loading && (
+            <Card className="p-4 bg-white mb-4">
+              <p className="text-sm text-gray-600">Loading patients…</p>
+            </Card>
+          )}
           <div className="space-y-4">
             {patients.map((patient) => (
               <Card
@@ -288,6 +272,11 @@ export function DoctorDashboard({ onBack }: DoctorDashboardProps) {
 
           {selectedPatient && (
             <div className="space-y-6">
+              {saveError && (
+                <Card className="p-4 bg-red-50 border-red-200">
+                  <p className="text-sm text-red-800">{saveError}</p>
+                </Card>
+              )}
               {/* Patient Info */}
               <div className="flex items-center gap-4">
                 <Avatar className="w-16 h-16">
@@ -392,13 +381,13 @@ export function DoctorDashboard({ onBack }: DoctorDashboardProps) {
 
               {/* Actions */}
               <div className="flex gap-3">
-                <Button 
+                <Button
                   className="flex-1 bg-green-600 hover:bg-green-700 text-white"
                   onClick={handleSaveConsultation}
                 >
                   Save Consultation
                 </Button>
-                <Button 
+                <Button
                   variant="outline"
                   onClick={() => setSelectedPatient(null)}
                 >

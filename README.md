@@ -168,7 +168,25 @@ This version is a demo prototype, but with support and selection, it can be deve
 
 ## Running the code
 
-Run `npm i` to install the dependencies.
+### Development
 
-Run `npm run dev` to start the development server.
+1. Install dependencies: `npm i` then `npm i --prefix server`
+2. Set up the database: `npm run db:push` then `npm run db:seed`
+3. Start dev servers: `npm run dev`  
+   - Frontend: http://localhost:3000  
+   - API: http://localhost:4000  
+
+### Production
+
+1. In `server/`, copy `.env.example` to `.env` and set:
+   - `DATABASE_URL` (e.g. SQLite `file:./prod.db` or PostgreSQL connection string)
+   - `PORT` (default 4000)
+   - `NODE_ENV=production`
+   - `CORS_ORIGIN` (optional; comma-separated allowed origins)
+2. From the project root run:
+   ```bash
+   npm run start
+   ```
+   This builds the frontend, builds the server, then runs the server. The app is served on the port you set (e.g. http://localhost:4000). The same server serves the API under `/api` and the React app for all other routes.
+
   

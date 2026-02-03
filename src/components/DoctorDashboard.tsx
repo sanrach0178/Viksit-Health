@@ -227,7 +227,7 @@ export function DoctorDashboard({ onBack }: DoctorDashboardProps) {
           </Card>
           <Card className="p-4 bg-white">
             <AlertCircle className="w-6 h-6 text-red-600 mb-2" />
-            <p className="text-2xl mb-1">0</p>
+            <p className="text-2xl mb-1">{patients.filter(p => p.priority === 'high').length}</p>
             <p className="text-sm text-gray-600">Urgent</p>
           </Card>
         </div>

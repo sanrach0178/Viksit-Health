@@ -10,6 +10,7 @@ import { Input } from './ui/input';
 import { apiCall } from '../services/apiClient';
 import { mockPatients } from '../data/mockDoctorData';
 import { toast } from 'sonner';
+import { NotificationPanel } from './NotificationPanel';
 
 interface DoctorDashboardProps {
   onBack: () => void;
@@ -152,12 +153,7 @@ export function DoctorDashboard({ onBack }: DoctorDashboardProps) {
               <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
                 {doctorData.status}
               </Badge>
-              <button className="relative">
-                <Bell className="w-6 h-6 text-gray-600" />
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                  4
-                </span>
-              </button>
+              <NotificationPanel count={4} />
             </div>
           </div>
         </div>

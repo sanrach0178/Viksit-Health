@@ -44,6 +44,7 @@ import {
 import { apiCall } from '../services/apiClient';
 import { mockDashboardData } from '../data/mockDashboardData';
 import { toast } from 'sonner';
+import { NotificationPanel } from './NotificationPanel';
 
 /* =======================
    Types
@@ -317,10 +318,13 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
                   AI Insights
                 </Badge>
               </div>
-              <Button variant="outline" size="sm">
-                <Download className="w-4 h-4 mr-2" />
-                Export
-              </Button>
+              <div className="flex items-center gap-3">
+                <NotificationPanel count={5} />
+                <button className="p-2 hover:bg-gray-100 rounded-full">
+                  <Download className="w-4 h-4 mr-2" />
+                  Export
+                </button>
+              </div>
             </div>
 
             {/* Line Chart */}

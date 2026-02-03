@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
-import { 
-  Bell, 
-  MapPin, 
-  Clock, 
-  Star, 
-  ChevronRight, 
-  Sparkles, 
-  Mic, 
+import {
+  Bell,
+  MapPin,
+  Clock,
+  Star,
+  ChevronRight,
+  Sparkles,
+  Mic,
   Search,
   Bed,
   User,
@@ -24,6 +24,7 @@ import { Textarea } from './ui/textarea';
 import { apiCall, ApiError } from '../services/apiClient';
 import { logger } from '../services/logger';
 import { sanitizeInput } from '../utils/validation';
+import { NotificationPanel } from './NotificationPanel';
 
 interface PatientDashboardProps {
   onBack: () => void;
@@ -191,14 +192,9 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
                 </button>
                 <h1 className="text-blue-600">Viksit Health</h1>
               </div>
-            <div className="flex items-center gap-3">
-              <button className="relative">
-                <Bell className="w-6 h-6 text-gray-600" />
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                  2
-                </span>
-              </button>
-            </div>
+              <div className="flex items-center gap-3">
+                <NotificationPanel count={2} />
+              </div>
             </div>
           </div>
         </div>
@@ -259,13 +255,13 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
           </Card>
 
           <div className="flex gap-3">
-            <Button 
+            <Button
               className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
               onClick={handleBackToSymptoms}
             >
               Book Another Appointment
             </Button>
-            <Button 
+            <Button
               variant="outline"
               onClick={onBack}
             >
@@ -295,12 +291,7 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
                 <h1 className="text-blue-600">Viksit Health</h1>
               </div>
               <div className="flex items-center gap-3">
-                <button className="relative">
-                  <Bell className="w-6 h-6 text-gray-600" />
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                    2
-                  </span>
-                </button>
+                <NotificationPanel count={2} />
               </div>
             </div>
           </div>
@@ -385,12 +376,7 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
               <h1 className="text-blue-600">Viksit Health</h1>
             </div>
             <div className="flex items-center gap-3">
-              <button className="relative">
-                <Bell className="w-6 h-6 text-gray-600" />
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                  2
-                </span>
-              </button>
+              <NotificationPanel count={2} />
             </div>
           </div>
         </div>
@@ -401,7 +387,7 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
         {/* Symptom Input Card */}
         <Card className="p-6 bg-white">
           <h2 className="text-gray-800 mb-4">How are you feeling today?</h2>
-          
+
           <div className="mb-4">
             <Textarea
               placeholder="Enter your symptoms (e.g., fever, headache, cough...)"
@@ -468,7 +454,7 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
         {showResults && (
           <div>
             <h2 className="text-gray-800 mb-4">Nearby Hospitals</h2>
-            
+
             {loadingHospitals && (
               <Card className="p-4 bg-white mb-4">
                 <p className="text-sm text-gray-600">Loading hospitals…</p>
@@ -530,7 +516,7 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
                         </div>
                       </div>
 
-                      <Button 
+                      <Button
                         className="bg-blue-600 hover:bg-blue-700 text-white w-full lg:w-auto"
                         onClick={() => handleViewDoctors(hospital)}
                       >
@@ -550,7 +536,7 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
         {selectedHospital && !bookingConfirmed && (
           <div>
             <h2 className="text-gray-800 mb-4">Select Doctor - {selectedHospital.name}</h2>
-            
+
             {loadingDoctors && (
               <Card className="p-4 bg-white mb-4">
                 <p className="text-sm text-gray-600">Loading doctors…</p>
@@ -653,13 +639,13 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
             </Card>
 
             <div className="flex gap-3 justify-center">
-              <Button 
+              <Button
                 className="bg-blue-600 hover:bg-blue-700 text-white"
                 onClick={handleBackToSymptoms}
               >
                 Book Another Appointment
               </Button>
-              <Button 
+              <Button
                 variant="outline"
                 onClick={onBack}
               >
@@ -682,6 +668,6 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
           </Card>
         )}
       </div>
-    </div>
+    </div >
   );
 }

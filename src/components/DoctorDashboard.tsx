@@ -40,6 +40,8 @@ export function DoctorDashboard({ onBack }: DoctorDashboardProps) {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [showRecords, setShowRecords] = useState(false);
+  const [showReports, setShowReports] = useState(false);
 
   const doctorNotifications: Notification[] = [
     {
@@ -418,11 +420,11 @@ export function DoctorDashboard({ onBack }: DoctorDashboardProps) {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-2 gap-4 pb-6">
-          <Card className="p-4 text-center hover:shadow-lg transition-shadow cursor-pointer bg-white">
+          <Card className="p-4 text-center hover:shadow-lg transition-shadow cursor-pointer bg-white" onClick={() => setShowRecords(true)}>
             <FileText className="w-8 h-8 text-blue-600 mx-auto mb-2" />
             <p className="text-sm text-gray-700">Patient Records</p>
           </Card>
-          <Card className="p-4 text-center hover:shadow-lg transition-shadow cursor-pointer bg-white">
+          <Card className="p-4 text-center hover:shadow-lg transition-shadow cursor-pointer bg-white" onClick={() => setShowReports(true)}>
             <Activity className="w-8 h-8 text-green-600 mx-auto mb-2" />
             <p className="text-sm text-gray-700">Health Reports</p>
           </Card>
@@ -565,6 +567,71 @@ export function DoctorDashboard({ onBack }: DoctorDashboardProps) {
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Patient Records Dialog */}
+      <Dialog open={showRecords} onOpenChange={setShowRecords}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Patient Records Database</DialogTitle>
+            <DialogDescription>
+              Complete directory of your assigned patients and their latest status.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            {patients.map((patient) => (
+              <div key={patient.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                <div className="flex items-center gap-4">
+                  <Avatar>
+                    <AvatarImage src={patient.image} />
+                    <AvatarFallback>{patient.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h4 className="font-medium text-gray-900">{patient.name}</h4>
+                    <p className="text-sm text-gray-500">{patient.age} years • {patient.gender}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <Badge variant="outline" className={patient.priority === 'high' ? 'text-red-600 border-red-200 bg-red-50' : 'text-gray-600'}>
+                    {patient.disease}
+                  </Badge>
+                  <p className="text-xs text-gray-400 mt-1">Last Visit: Today</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Health Reports Dialog */}
+      <Dialog open={showReports} onOpenChange={setShowReports}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Daily Health Intelligence Report</DialogTitle>
+            <DialogDescription>
+              AI-driven insights and practice statistics for today.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-2 gap-4 mb-4">
+            <Card className="p-4 bg-blue-50 border-blue-100">
+              <h3 className="text-blue-900 font-semibold mb-1">Total Patients</h3>
+              <p className="text-3xl font-bold text-blue-700">{patients.length}</p>
+            </Card>
+            <Card className="p-4 bg-red-50 border-red-100">
+              <h3 className="text-red-900 font-semibold mb-1">Critical Cases</h3>
+              <p className="text-3xl font-bold text-red-700">{patients.filter(p => p.priority === 'high').length}</p>
+            </Card>
+          </div>
+          <div className="space-y-3">
+            <h4 className="font-medium text-gray-900">Common Conditions Today</h4>
+            {Array.from(new Set(patients.map(p => p.disease))).slice(0, 3).map((disease, i) => (
+              <div key={i} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                <span className="text-gray-700">{disease}</span>
+                <Badge variant="secondary">{patients.filter(p => p.disease === disease).length} cases</Badge>
+              </div>
+            ))}
+          </div>
         </DialogContent>
       </Dialog>
     </div>

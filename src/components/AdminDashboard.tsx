@@ -42,6 +42,8 @@ import {
 } from './ui/select';
 
 import { apiCall } from '../services/apiClient';
+import { mockDashboardData } from '../data/mockDashboardData';
+import { toast } from 'sonner';
 
 /* =======================
    Types
@@ -51,7 +53,7 @@ interface AdminDashboardProps {
   onBack: () => void;
 }
 
-interface DiseaseTrendEntry {
+export interface DiseaseTrendEntry {
   month: string;
   flu: number;
   hypertension: number;
@@ -59,48 +61,50 @@ interface DiseaseTrendEntry {
   covid: number;
 }
 
-interface DiseaseDistributionEntry {
+export interface DiseaseDistributionEntry {
   name: string;
   value: number;
   color: string;
 }
 
-interface MedicineStockEntry {
-  id: string;
+export interface MedicineStockEntry {
+  id: number;
   name: string;
   stock: number;
   reorderLevel: number;
   price: number;
   expiry: string;
-  status: 'critical' | 'low' | 'good';
+  status: 'optimal' | 'low' | 'critical';
 }
 
-interface MedicineUsageEntry {
+export interface MedicineUsageEntry {
   category: string;
   usage: number;
   available: number;
 }
 
-interface MonthlyRevenueEntry {
+export interface MonthlyRevenueEntry {
   month: string;
   revenue: number;
   expenses: number;
 }
 
-interface DashboardMetrics {
+export interface DashboardMetrics {
   totalPatients: number;
   activeConsultations: number;
   revenueJan: number;
   lowStockAlerts: number;
+  hospitals: number;
+  doctors: number;
 }
 
-interface DashboardData {
+export interface DashboardData {
+  metrics: DashboardMetrics;
   diseaseTrendData: DiseaseTrendEntry[];
   diseaseDistribution: DiseaseDistributionEntry[];
   medicineStock: MedicineStockEntry[];
-  medicineUsageData: MedicineUsageEntry[];
   monthlyRevenue: MonthlyRevenueEntry[];
-  metrics: DashboardMetrics;
+  medicineUsageData: MedicineUsageEntry[];
 }
 
 /* =======================
@@ -125,10 +129,12 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
   const fetchDashboard = async (): Promise<void> => {
     setLoading(true);
     try {
-      const data = await apiCall<DashboardData>('/api/admin/dashboard');
+      const data = await apiCall<DashboardData>('/admin/dashboard');
       setDashboard(data);
-    } catch (err) {
-      console.error('Failed to load admin dashboard', err);
+    } catch (error) {
+      console.warn('Failed to fetch dashboard data, using mock data', error);
+      setDashboard(mockDashboardData);
+      toast.info('Viewing Demo Data (Backend unreachable)');
     } finally {
       setLoading(false);
     }
@@ -173,7 +179,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
         return 'bg-red-100 text-red-800 border-red-300';
       case 'low':
         return 'bg-yellow-100 text-yellow-800 border-yellow-300';
-      case 'good':
+      case 'optimal':
         return 'bg-green-100 text-green-800 border-green-300';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-300';

@@ -110,6 +110,7 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
     setLoadingHospitals(true);
     try {
       const data = await apiCall<Hospital[]>("/api/hospitals");
+      if (!data || data.length === 0) throw new Error("No data returned");
       setHospitals(data);
     } catch (error) {
       if (error instanceof ApiError) {
@@ -126,6 +127,7 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
     setLoadingDoctors(true);
     try {
       const data = await apiCall<Doctor[]>("/api/doctors");
+      if (!data || data.length === 0) throw new Error("No data returned");
       setDoctors(data);
     } catch (error) {
       if (error instanceof ApiError) {

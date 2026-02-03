@@ -24,7 +24,7 @@ import { Textarea } from './ui/textarea';
 import { apiCall, ApiError } from '../services/apiClient';
 import { logger } from '../services/logger';
 import { sanitizeInput } from '../utils/validation';
-import { NotificationPanel } from './NotificationPanel';
+import { NotificationPanel, Notification } from './NotificationPanel';
 
 interface PatientDashboardProps {
   onBack: () => void;
@@ -68,6 +68,25 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
   const [loadingHospitals, setLoadingHospitals] = useState(false);
   const [loadingDoctors, setLoadingDoctors] = useState(false);
   const [bookingError, setBookingError] = useState<string | null>(null);
+
+  const patientNotifications: Notification[] = [
+    {
+      id: 1,
+      title: 'Upcoming Appointment',
+      message: 'Reminder: You have an appointment with Dr. Michael Chen tomorrow at 10:00 AM.',
+      time: '1 hour ago',
+      type: 'info',
+      read: false,
+    },
+    {
+      id: 2,
+      title: 'Health Check Reminder',
+      message: 'It has been 6 months since your last dental checkup.',
+      time: '2 days ago',
+      type: 'info',
+      read: true,
+    }
+  ];
 
   const patientData = {
     name: 'Sarah Johnson',
@@ -376,7 +395,7 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
               <h1 className="text-blue-600">Viksit Health</h1>
             </div>
             <div className="flex items-center gap-3">
-              <NotificationPanel count={2} />
+              <NotificationPanel notifications={patientNotifications} count={1} />
             </div>
           </div>
         </div>

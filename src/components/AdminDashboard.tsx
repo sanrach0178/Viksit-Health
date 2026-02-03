@@ -44,7 +44,7 @@ import {
 import { apiCall } from '../services/apiClient';
 import { mockDashboardData } from '../data/mockDashboardData';
 import { toast } from 'sonner';
-import { NotificationPanel } from './NotificationPanel';
+import { NotificationPanel, Notification } from './NotificationPanel';
 
 /* =======================
    Types
@@ -113,12 +113,36 @@ export interface DashboardData {
 ======================= */
 
 export function AdminDashboard({ onBack }: AdminDashboardProps) {
-  const [selectedView, setSelectedView] = useState<
-    'overview' | 'diseases' | 'inventory' | 'reports' | 'doctors'
-  >('overview');
+  const [selectedView, setSelectedView] = useState<'overview' | 'appointments' | 'doctors' | 'medicines' | 'diseases' | 'inventory' | 'reports'>('overview');
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const [loading, setLoading] = useState<boolean>(false);
-  const [dashboard, setDashboard] = useState<DashboardData | null>(null);
+  const adminNotifications: Notification[] = [
+    {
+      id: 1,
+      title: 'Critical Stock Alert',
+      message: 'Paracetamol 500mg is below reorder level (45 units remaining).',
+      time: '10 mins ago',
+      type: 'warning',
+      read: false,
+    },
+    {
+      id: 2,
+      title: 'Stock Expiry Warning',
+      message: 'Amoxicillin batch #452 expires in 3 days.',
+      time: '2 hours ago',
+      type: 'warning',
+      read: false,
+    },
+    {
+      id: 3,
+      title: 'Low Stock Alert',
+      message: 'Insulin Glargine stock is running low.',
+      time: '5 hours ago',
+      type: 'info',
+      read: true,
+    }
+  ];
 
   const adminData = {
     name: 'Admin',
@@ -131,10 +155,10 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
     setLoading(true);
     try {
       const data = await apiCall<DashboardData>('/admin/dashboard');
-      setDashboard(data);
+      setDashboardData(data);
     } catch (error) {
       console.warn('Failed to fetch dashboard data, using mock data', error);
-      setDashboard(mockDashboardData);
+      setDashboardData(mockDashboardData);
       toast.info('Viewing Demo Data (Backend unreachable)');
     } finally {
       setLoading(false);
@@ -150,28 +174,28 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
   ======================= */
 
   const diseaseTrendData = useMemo<DiseaseTrendEntry[]>(
-    () => dashboard?.diseaseTrendData ?? [],
-    [dashboard]
+    () => dashboardData?.diseaseTrendData ?? [],
+    [dashboardData]
   );
 
   const diseaseDistribution = useMemo<DiseaseDistributionEntry[]>(
-    () => dashboard?.diseaseDistribution ?? [],
-    [dashboard]
+    () => dashboardData?.diseaseDistribution ?? [],
+    [dashboardData]
   );
 
   const medicineStock = useMemo<MedicineStockEntry[]>(
-    () => dashboard?.medicineStock ?? [],
-    [dashboard]
+    () => dashboardData?.medicineStock ?? [],
+    [dashboardData]
   );
 
   const monthlyRevenue = useMemo<MonthlyRevenueEntry[]>(
-    () => dashboard?.monthlyRevenue ?? [],
-    [dashboard]
+    () => dashboardData?.monthlyRevenue ?? [],
+    [dashboardData]
   );
 
   const medicineUsageData = useMemo<MedicineUsageEntry[]>(
-    () => dashboard?.medicineUsageData ?? [],
-    [dashboard]
+    () => dashboardData?.medicineUsageData ?? [],
+    [dashboardData]
   );
 
   const getStockStatusColor = (status: MedicineStockEntry['status']): string => {
@@ -260,7 +284,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
               </Badge>
             </div>
             <p className="text-3xl mb-1">
-              {dashboard?.metrics?.totalPatients ?? 0}
+              {dashboardData?.metrics?.totalPatients ?? 0}
             </p>
             <p className="text-sm text-blue-100">Total Patients (Jan)</p>
           </Card>
@@ -273,7 +297,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
               </Badge>
             </div>
             <p className="text-3xl mb-1">
-              {dashboard?.metrics?.activeConsultations ?? 0}
+              {dashboardData?.metrics?.activeConsultations ?? 0}
             </p>
             <p className="text-sm text-green-100">Active Consultations</p>
           </Card>
@@ -287,7 +311,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
             </div>
             <p className="text-3xl mb-1">
               ₹
-              {((dashboard?.metrics?.revenueJan ?? 0) / 100000).toFixed(1)}L
+              {((dashboardData?.metrics?.revenueJan ?? 0) / 100000).toFixed(1)}L
             </p>
             <p className="text-sm text-orange-100">Revenue (Jan)</p>
           </Card>
@@ -300,7 +324,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
               </Badge>
             </div>
             <p className="text-3xl mb-1">
-              {dashboard?.metrics?.lowStockAlerts ?? 0}
+              {dashboardData?.metrics?.lowStockAlerts ?? 0}
             </p>
             <p className="text-sm text-purple-100">Low Stock Alerts</p>
           </Card>
@@ -319,7 +343,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
                 </Badge>
               </div>
               <div className="flex items-center gap-3">
-                <NotificationPanel count={5} />
+                <NotificationPanel notifications={adminNotifications} count={2} />
                 <button className="p-2 hover:bg-gray-100 rounded-full">
                   <Download className="w-4 h-4 mr-2" />
                   Export

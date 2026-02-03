@@ -10,7 +10,7 @@ import {
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 
-interface Notification {
+export interface Notification {
     id: number;
     title: string;
     message: string;
@@ -96,8 +96,8 @@ export function NotificationPanel({ notifications = defaultNotifications, count 
                         >
                             <div className="flex gap-3 items-start">
                                 <div className={`mt-1 p-1.5 rounded-full ${notification.type === 'success' ? 'bg-green-100 text-green-600' :
-                                        notification.type === 'warning' ? 'bg-yellow-100 text-yellow-600' :
-                                            'bg-blue-100 text-blue-600'
+                                    notification.type === 'warning' ? 'bg-yellow-100 text-yellow-600' :
+                                        'bg-blue-100 text-blue-600'
                                     }`}>
                                     {notification.type === 'success' ? <CheckCircle className="w-4 h-4" /> :
                                         notification.type === 'warning' ? <Info className="w-4 h-4" /> :

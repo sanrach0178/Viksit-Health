@@ -10,7 +10,7 @@ import { Input } from './ui/input';
 import { apiCall } from '../services/apiClient';
 import { mockPatients } from '../data/mockDoctorData';
 import { toast } from 'sonner';
-import { NotificationPanel } from './NotificationPanel';
+import { NotificationPanel, Notification } from './NotificationPanel';
 
 interface DoctorDashboardProps {
   onBack: () => void;
@@ -40,6 +40,25 @@ export function DoctorDashboard({ onBack }: DoctorDashboardProps) {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+
+  const doctorNotifications: Notification[] = [
+    {
+      id: 1,
+      title: 'Next Patient Arrival',
+      message: 'Sarah Johnson (High Priority) has arrived and is waiting in Room 3.',
+      time: 'Just now',
+      type: 'info',
+      read: false,
+    },
+    {
+      id: 2,
+      title: 'Upcoming Appointment',
+      message: 'Robert Smith is scheduled for 10:45 AM (Cardiac Review).',
+      time: '15 mins ago',
+      type: 'info',
+      read: true,
+    }
+  ];
 
   const doctorData = {
     name: 'Dr. Michael Chen',
@@ -153,7 +172,7 @@ export function DoctorDashboard({ onBack }: DoctorDashboardProps) {
               <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
                 {doctorData.status}
               </Badge>
-              <NotificationPanel count={4} />
+              <NotificationPanel notifications={doctorNotifications} count={1} />
             </div>
           </div>
         </div>

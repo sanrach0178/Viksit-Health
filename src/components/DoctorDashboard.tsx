@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Bell, Calendar, Star, User, Activity, FileText, Pill, Clock, AlertCircle, CheckCircle, Sparkles } from 'lucide-react';
+import { Bell, Calendar, Star, User, Activity, FileText, Pill, Clock, AlertCircle, CheckCircle, Sparkles, TrendingUp, AlertTriangle } from 'lucide-react';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
@@ -8,12 +8,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Textarea } from './ui/textarea';
 import { Input } from './ui/input';
 import { apiCall } from '../services/apiClient';
+import { mockPatients } from '../data/mockDoctorData';
+import { toast } from 'sonner';
 
 interface DoctorDashboardProps {
   onBack: () => void;
 }
 
-interface Patient {
+export interface Patient {
   id: number;
   name: string;
   age: number;
@@ -26,6 +28,7 @@ interface Patient {
   medicalHistory?: string[];
   pastMedicines?: string[];
   aiSummary?: string;
+  priority?: 'high' | 'medium' | 'low';
 }
 
 export function DoctorDashboard({ onBack }: DoctorDashboardProps) {
@@ -53,7 +56,9 @@ export function DoctorDashboard({ onBack }: DoctorDashboardProps) {
       const data = await apiCall<Patient[]>('/api/doctor/patients');
       setPatients(data);
     } catch (error) {
-      console.error("Failed to load patients", error);
+      console.warn("Failed to load patients, using mock data", error);
+      setPatients(mockPatients);
+      toast.info('Viewing Demo Data (Backend unreachable)');
     } finally {
       setLoading(false);
     }
@@ -190,60 +195,187 @@ export function DoctorDashboard({ onBack }: DoctorDashboardProps) {
           </Card>
         </div>
 
-        {/* Patient Queue */}
+        {/* Patient Queue by Priority */}
         <div>
-          <h3 className="text-gray-800 mb-4">Today's Patients</h3>
+          <h3 className="text-gray-800 mb-4">Patient Queue</h3>
           {loading && (
             <Card className="p-4 bg-white mb-4">
               <p className="text-sm text-gray-600">Loading patients…</p>
             </Card>
           )}
-          <div className="space-y-4">
-            {patients.map((patient) => (
-              <Card
-                key={patient.id}
-                className="p-5 hover:shadow-lg transition-shadow cursor-pointer bg-white"
-                onClick={() => setSelectedPatient(patient)}
-              >
-                <div className="flex items-start gap-4">
-                  <Avatar className="w-16 h-16">
-                    <AvatarImage src={patient.image} alt={patient.name} />
-                    <AvatarFallback>{patient.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                  </Avatar>
 
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between mb-2">
-                      <div>
-                        <h4 className="text-gray-800 mb-1">{patient.name}</h4>
-                        <p className="text-sm text-gray-600">
-                          {patient.age} years • {patient.gender}
+          {/* High Priority */}
+          <div className="mb-8">
+            <h4 className="text-red-600 font-medium mb-3 flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5" />
+              High Priority
+            </h4>
+            <div className="space-y-4">
+              {patients.filter(p => p.priority === 'high').map((patient) => (
+                <Card
+                  key={patient.id}
+                  className="p-5 hover:shadow-lg transition-shadow cursor-pointer bg-white border-l-4 border-l-red-500"
+                  onClick={() => setSelectedPatient(patient)}
+                >
+                  <div className="flex items-start gap-4">
+                    <Avatar className="w-16 h-16">
+                      <AvatarImage src={patient.image} alt={patient.name} />
+                      <AvatarFallback>{patient.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    </Avatar>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <h4 className="text-gray-800 mb-1 font-semibold">{patient.name}</h4>
+                          <p className="text-sm text-gray-600">
+                            {patient.age} years • {patient.gender}
+                          </p>
+                        </div>
+                        <Badge className="bg-red-100 text-red-800">
+                          High Priority
+                        </Badge>
+                      </div>
+
+                      <div className="mb-3">
+                        <p className="text-sm text-gray-800 mb-1">
+                          <span className="text-red-600 font-medium">Complaint:</span> {patient.disease}
                         </p>
+                        <p className="text-sm text-gray-600 italic">"{patient.message}"</p>
                       </div>
-                      <Badge className={getStatusColor(patient.status)}>
-                        {patient.status.replace('-', ' ')}
-                      </Badge>
-                    </div>
 
-                    <div className="mb-3">
-                      <p className="text-sm text-gray-800 mb-1">
-                        <span className="text-red-600">●</span> {patient.disease}
-                      </p>
-                      <p className="text-sm text-gray-600 italic">"{patient.message}"</p>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1 text-sm text-gray-600">
-                        <Clock className="w-4 h-4" />
-                        {patient.appointmentTime}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1 text-sm text-gray-600">
+                          <Clock className="w-4 h-4" />
+                          {patient.appointmentTime}
+                        </div>
+                        <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white">
+                          Attend Now
+                        </Button>
                       </div>
-                      <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white">
-                        View Details →
-                      </Button>
                     </div>
                   </div>
-                </div>
-              </Card>
-            ))}
+                </Card>
+              ))}
+              {patients.filter(p => p.priority === 'high').length === 0 && (
+                <p className="text-sm text-gray-500 italic px-4">No high priority patients.</p>
+              )}
+            </div>
+          </div>
+
+          {/* Medium Priority */}
+          <div className="mb-8">
+            <h4 className="text-yellow-600 font-medium mb-3 flex items-center gap-2">
+              <Activity className="w-5 h-5" />
+              Medium Priority
+            </h4>
+            <div className="space-y-4">
+              {patients.filter(p => p.priority === 'medium').map((patient) => (
+                <Card
+                  key={patient.id}
+                  className="p-5 hover:shadow-lg transition-shadow cursor-pointer bg-white border-l-4 border-l-yellow-500"
+                  onClick={() => setSelectedPatient(patient)}
+                >
+                  <div className="flex items-start gap-4">
+                    <Avatar className="w-16 h-16">
+                      <AvatarImage src={patient.image} alt={patient.name} />
+                      <AvatarFallback>{patient.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    </Avatar>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <h4 className="text-gray-800 mb-1 font-semibold">{patient.name}</h4>
+                          <p className="text-sm text-gray-600">
+                            {patient.age} years • {patient.gender}
+                          </p>
+                        </div>
+                        <Badge className="bg-yellow-100 text-yellow-800">
+                          Medium Priority
+                        </Badge>
+                      </div>
+
+                      <div className="mb-3">
+                        <p className="text-sm text-gray-800 mb-1">
+                          <span className="text-yellow-600 font-medium">Complaint:</span> {patient.disease}
+                        </p>
+                        <p className="text-sm text-gray-600 italic">"{patient.message}"</p>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1 text-sm text-gray-600">
+                          <Clock className="w-4 h-4" />
+                          {patient.appointmentTime}
+                        </div>
+                        <Button size="sm" className="bg-yellow-600 hover:bg-yellow-700 text-white">
+                          View Details
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+              {patients.filter(p => p.priority === 'medium').length === 0 && (
+                <p className="text-sm text-gray-500 italic px-4">No medium priority patients.</p>
+              )}
+            </div>
+          </div>
+
+          {/* Low Priority */}
+          <div className="mb-8">
+            <h4 className="text-green-600 font-medium mb-3 flex items-center gap-2">
+              <CheckCircle className="w-5 h-5" />
+              Low Priority
+            </h4>
+            <div className="space-y-4">
+              {patients.filter(p => !p.priority || p.priority === 'low').map((patient) => (
+                <Card
+                  key={patient.id}
+                  className="p-5 hover:shadow-lg transition-shadow cursor-pointer bg-white border-l-4 border-l-green-500"
+                  onClick={() => setSelectedPatient(patient)}
+                >
+                  <div className="flex items-start gap-4">
+                    <Avatar className="w-16 h-16">
+                      <AvatarImage src={patient.image} alt={patient.name} />
+                      <AvatarFallback>{patient.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                    </Avatar>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <h4 className="text-gray-800 mb-1 font-semibold">{patient.name}</h4>
+                          <p className="text-sm text-gray-600">
+                            {patient.age} years • {patient.gender}
+                          </p>
+                        </div>
+                        <Badge className="bg-green-100 text-green-800">
+                          Low Priority
+                        </Badge>
+                      </div>
+
+                      <div className="mb-3">
+                        <p className="text-sm text-gray-800 mb-1">
+                          <span className="text-green-600 font-medium">Complaint:</span> {patient.disease}
+                        </p>
+                        <p className="text-sm text-gray-600 italic">"{patient.message}"</p>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1 text-sm text-gray-600">
+                          <Clock className="w-4 h-4" />
+                          {patient.appointmentTime}
+                        </div>
+                        <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white">
+                          View Details
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              ))}
+              {patients.filter(p => !p.priority || p.priority === 'low').length === 0 && (
+                <p className="text-sm text-gray-500 italic px-4">No low priority patients.</p>
+              )}
+            </div>
           </div>
         </div>
 

@@ -25,6 +25,8 @@ import { apiCall, ApiError } from '../services/apiClient';
 import { logger } from '../services/logger';
 import { sanitizeInput } from '../utils/validation';
 import { NotificationPanel, Notification } from './NotificationPanel';
+import { mockHospitals, mockDoctors } from '../data/mockPatientData';
+import { toast } from 'sonner';
 
 interface PatientDashboardProps {
   onBack: () => void;
@@ -113,7 +115,8 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
       if (error instanceof ApiError) {
         logger.error(`Failed to load hospitals: ${error.message}`);
       }
-      setHospitals([]);
+      setHospitals(mockHospitals);
+      toast.info("Showing Demo Hospitals (Backend unreachable)");
     } finally {
       setLoadingHospitals(false);
     }
@@ -128,7 +131,7 @@ export function PatientDashboard({ onBack }: PatientDashboardProps) {
       if (error instanceof ApiError) {
         logger.error(`Failed to load doctors: ${error.message}`);
       }
-      setDoctors([]);
+      setDoctors(mockDoctors);
     } finally {
       setLoadingDoctors(false);
     }

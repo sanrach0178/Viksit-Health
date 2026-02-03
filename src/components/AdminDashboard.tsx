@@ -265,7 +265,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
               <AvatarFallback>AD</AvatarFallback>
             </Avatar>
 
-            <Bell className="w-6 h-6 text-gray-600" />
+
           </div>
         </div>
       </div>

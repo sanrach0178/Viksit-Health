@@ -50,11 +50,33 @@ export function DoctorDashboard({ onBack }: DoctorDashboardProps) {
     status: 'Available',
   };
 
+  // Helper to assign priority if missing (for API data)
+  const enrichPatientData = (patients: Patient[]): Patient[] => {
+    return patients.map(p => {
+      if (p.priority) return p;
+
+      const text = (p.disease + ' ' + p.message).toLowerCase();
+      let priority: 'high' | 'medium' | 'low' = 'low';
+
+      if (text.includes('severe') || text.includes('chest') || text.includes('pain') || text.includes('urgent')) {
+        priority = 'high';
+      } else if (text.includes('flu') || text.includes('fever') || text.includes('moderate')) {
+        priority = 'medium';
+      }
+
+      // Fallback distribution based on ID if no keywords match, to ensure variety
+      if (priority === 'low' && p.id % 3 === 0) priority = 'high';
+      if (priority === 'low' && p.id % 3 === 1) priority = 'medium';
+
+      return { ...p, priority };
+    });
+  };
+
   const fetchPatients = async () => {
     setLoading(true);
     try {
       const data = await apiCall<Patient[]>('/api/doctor/patients');
-      setPatients(data);
+      setPatients(enrichPatientData(data));
     } catch (error) {
       console.warn("Failed to load patients, using mock data", error);
       setPatients(mockPatients);

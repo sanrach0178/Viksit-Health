@@ -680,6 +680,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
                   patients: 2500,
                   rating: 4.8,
                   status: 'Available',
+                  image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=800&q=80',
                 },
                 {
                   name: 'Dr. Priya Sharma',
@@ -687,6 +688,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
                   patients: 1800,
                   rating: 4.9,
                   status: 'Available',
+                  image: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=800&q=80',
                 },
                 {
                   name: 'Dr. Rajesh Kumar',
@@ -694,6 +696,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
                   patients: 2100,
                   rating: 4.7,
                   status: 'On Leave',
+                  image: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=800&q=80',
                 },
                 {
                   name: 'Dr. Sarah Johnson',
@@ -701,6 +704,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
                   patients: 1500,
                   rating: 4.8,
                   status: 'Available',
+                  image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=800&q=80',
                 },
                 {
                   name: 'Dr. Amit Patel',
@@ -708,6 +712,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
                   patients: 1900,
                   rating: 4.6,
                   status: 'Busy',
+                  image: 'https://images.unsplash.com/photo-1612916194234-f68f1c7263b0?auto=format&fit=crop&w=800&q=80',
                 },
                 {
                   name: 'Dr. Lisa Wong',
@@ -715,6 +720,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
                   patients: 1600,
                   rating: 4.9,
                   status: 'Available',
+                  image: 'https://images.unsplash.com/photo-1527613426441-4da17471b66d?auto=format&fit=crop&w=800&q=80',
                 },
               ].map((doctor, idx) => (
                 <Card
@@ -724,7 +730,7 @@ export function AdminDashboard({ onBack }: AdminDashboardProps) {
                   <div className="flex items-start gap-3 mb-3">
                     <Avatar className="w-12 h-12">
                       <AvatarImage
-                        src="https://images.unsplash.com/photo-1758691463626-0ab959babe00?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpY2FsJTIwZG9jdG9yJTIwcHJvZmVzc2lvbmFsfGVufDF8fHx8MTc2ODMwODM4MHww&ixlib=rb-4.1.0&q=80&w=1080"
+                        src={doctor.image}
                         alt={doctor.name}
                       />
                       <AvatarFallback>

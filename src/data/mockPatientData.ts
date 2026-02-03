@@ -12,7 +12,7 @@ export const mockHospitals = [
         },
         waitingTime: "15-20 mins",
         rating: 4.5,
-        image: "https://images.unsplash.com/photo-1587351021759-3e566b9af92c?q=80&w=1000&auto=format&fit=crop"
+        image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=1000&auto=format&fit=crop"
     },
     {
         id: 2,
@@ -40,7 +40,7 @@ export const mockHospitals = [
         },
         waitingTime: "10-15 mins",
         rating: 4.2,
-        image: "https://images.unsplash.com/photo-1538108149393-fbbd8189718c?q=80&w=1000&auto=format&fit=crop"
+        image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=1000&auto=format&fit=crop"
     }
 ];
 
